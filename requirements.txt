@@ -1,0 +1,46 @@
+# ====================================
+# AUDITOR MUSICAL - Planillero Virtual
+# ====================================
+
+# Reconocimiento de audio
+shazamio==0.4.0.1
+
+# Manipulación de audio
+pydub==0.25.1
+
+# Procesamiento de archivos Excel
+pandas==2.1.4
+openpyxl==3.1.2
+
+# Manejo de video/audio con ffmpeg
+ffmpeg-python==0.2.0
+
+# Manejo de zonas horarias
+pytz==2023.3
+
+# Programación asíncrona
+nest-asyncio==1.5.8
+aiohttp==3.9.1
+
+# Google Sheets
+gspread
+google-auth-oauthlib
+
+# ====================================
+# DEPENDENCIAS EXTERNAS REQUERIDAS:
+# ====================================
+# 
+# 1. FFMPEG (OBLIGATORIO):
+#    Descargar desde: https://ffmpeg.org/download.html
+#    Instalar en: C:\Program Files\ffmpeg-[version]\bin\
+#    
+# 2. PYTHON (Recomendado):
+#    Python 3.8+ 
+#
+# ====================================
+# INSTALACIÓN:
+# ====================================
+# 
+# pip install -r requirements.txt
+#
+# ====================================
