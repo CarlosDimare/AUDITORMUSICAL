@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auditor Musical - Edición Manual</title>
+  <style>
+  :root {
+    --bg-dark: #1e1e1e;
+    --card-dark: #2a2a2a;
+    --text-dark: #e5e5e5;
+    --header-dark: #0b5394;
+    --header-accent: #    --header-accent: FFFFFF;
+;
+    --input-bg: #3a3a3a;
+    --input-border: #555;
+    --button-bg: #3a3a3a;
+    --button-hover: #2a9e48;
+    --success-bg: #23482b;
+    --success-text: #8fdc9d;
+    --error-bg: #5c1d24;
+    --error-text: #ffb3b3;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  body {
+    background: var(--bg-dark);
+    padding: 20px;
+    color: var(--text-dark);
+  }
+
+  .container {
+    display: flex;
+    gap: 20px;
+    height: 90vh;
+  }
+
+  .sheet-container,
+  .form-container {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    background: var(--card-dark);
+  }
+
+  .sheet-container {
+    flex: 3;
+  }
+
+  .form-container {
+    flex: 2;
+  }
+
+  .sheet-container h2,
+  .form-container h2 {
+    padding: 15px;
+    background: var(--header-dark);
+    color: var(--header-accent);
+    text-align: center;
+  }
+
+  .sheet-iframe {
+    width: 100%;
+    height: calc(100% - 50px);
+    border: none;
+  }
+
+  .form-box {
+    padding: 20px;
+  }
+
+  .form-box label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: var(--text-dark);
+  }
+
+  .form-box input {
+    width: 100%;
+    padding: 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    font-size: 16px;
+    color: var(--text-dark);
+  }
+
+  .form-box button {
+    width: 100%;
+    padding: 12px;
+    background: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  .form-box button:hover {
+    background: var(--button-hover);
+  }
+
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .checkbox-group input {
+    width: auto;
+  }
+
+  #hora {
+    display: none;
+  }
+
+  #hora.visible {
+    display: block;
+  }
+
+  .status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    display: none;
+  }
+
+  .status.success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    display: block;
+  }
+
+  .status.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    display: block;
+  }
+</style>
+
+
+</head>
+<body class="dark-mode">
+
+<div class="container">
+    <!-- IZQUIERDA: Google Sheet (solo celdas) -->
+    <div class="sheet-container">
+      <h2>📊 Registros en vivo</h2>
+      <iframe
+        class="sheet-iframe"
+        src="https://docs.google.com/spreadsheets/d/1UwD4vpCqZK87DlYd-mAiDc_LQSd2_pEuD0UO3fBlTSA/edit?rm=minimal&widget=true&chrome=false"
+        title="Google Sheet - Auditor Musical"
+      ></iframe>
+    </div>
+
+    <!-- DERECHA: Formulario -->
+    <div class="form-container">
+      <h2>➕ Agregar música</h2>
+      <div class="form-box">
+        <form id="manualForm">
+          <div class="checkbox-group">
+            <input type="checkbox" id="manualTime" />
+            <label for="manualTime" style="display:inline;">Ingresar hora manualmente</label>
+          </div>
+          <input
+            type="text"
+            id="hora"
+            placeholder="YYYY-MM-DD HH:MM:SS"
+            
+          />
+
+          <label for="titulo">Título de la canción</label>
+          <input
+            type="text"
+            id="titulo"
+            placeholder="Bohemian Rhapsody"
+            required
+          />
+
+          <label for="artista">Artista</label>
+          <input
+            type="text"
+            id="artista"
+            placeholder="Queen"
+            required
+          />
+
+          <button type="submit">Agregar</button>
+        </form>
+        <div id="status" class="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAiK-zsWv3YBBTubMNXcwxgYirKy2OtgwvSZW2PD6g01H790_myAa4GZnixTMvC1Bu5A/exec";
+    const horaInput = document.getElementById("hora");
+    const manualCheckbox = document.getElementById("manualTime");
+
+    manualCheckbox.addEventListener("change", () => {
+      if (manualCheckbox.checked) {
+        horaInput.classList.add("visible");
+        horaInput.value = ""; // limpia para que el usuario escriba
+      } else {
+        horaInput.classList.remove("visible");
+        horaInput.value = ""; // asegura que no se envíe nada si no es manual
+      }
+    });
+
+    function getNowFormatted() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    document.getElementById("manualForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const statusDiv = document.getElementById("status");
+      let hora = "";
+      if (manualCheckbox.checked) {
+        hora = horaInput.value.trim();
+        if (!hora) {
+          statusDiv.textContent = "⚠️ La hora es obligatoria en modo manual.";
+          statusDiv.className = "status error";
+          return;
+        }
+      } else {
+        hora = getNowFormatted(); // usa la hora EXACTA del envío
+      }
+
+      const titulo = document.getElementById("titulo").value.trim();
+      const artista = document.getElementById("artista").value.trim();
+
+      if (!titulo || !artista) {
+        statusDiv.textContent = "⚠️ Título y artista son obligatorios.";
+        statusDiv.className = "status error";
+        return;
+      }
+
+      try {
+        statusDiv.textContent = "Enviando...";
+        statusDiv.className = "status";
+        statusDiv.style.display = "block";
+
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ hora, titulo, artista }),
+        });
+
+        statusDiv.textContent = "✅ ¡Canción Agregada!";
+        statusDiv.className = "status success";
+        document.getElementById("manualForm").reset();
+        manualCheckbox.checked = false;
+        horaInput.classList.remove("visible");
+      } catch (error) {
+        statusDiv.textContent = "❌ Error al enviar.";
+        statusDiv.className = "status error";
+      }
+    });
+  </script>
+</body>
+</html>
