@@ -10,8 +10,7 @@
     --card-dark: #2a2a2a;
     --text-dark: #e5e5e5;
     --header-dark: #0b5394;
-    --header-accent: #    --header-accent: FFFFFF;
-;
+    --header-accent: #FFFFFF;
     --input-bg: #3a3a3a;
     --input-border: #555;
     --button-bg: #3a3a3a;
@@ -31,14 +30,16 @@
 
   body {
     background: var(--bg-dark);
-    padding: 20px;
+    padding: 10px;
     color: var(--text-dark);
   }
 
   .container {
     display: flex;
+    flex-direction: column;
     gap: 20px;
-    height: 90vh;
+    height: auto;
+    min-height: 90vh;
   }
 
   .sheet-container,
@@ -50,11 +51,12 @@
   }
 
   .sheet-container {
-    flex: 3;
+    flex: 1;
+    min-height: 40vh;
   }
 
   .form-container {
-    flex: 2;
+    flex: 1;
   }
 
   .sheet-container h2,
@@ -63,11 +65,12 @@
     background: var(--header-dark);
     color: var(--header-accent);
     text-align: center;
+    font-size: 1.2rem;
   }
 
   .sheet-iframe {
     width: 100%;
-    height: calc(100% - 50px);
+    height: 40vh;
     border: none;
   }
 
@@ -146,12 +149,64 @@
     color: var(--error-text);
     display: block;
   }
+
+  /* Media queries para responsividad */
+  @media (min-width: 768px) {
+    body {
+      padding: 20px;
+    }
+    
+    .container {
+      flex-direction: row;
+      height: 90vh;
+    }
+    
+    .sheet-container {
+      flex: 3;
+    }
+    
+    .form-container {
+      flex: 2;
+    }
+    
+    .sheet-iframe {
+      height: calc(100% - 50px);
+    }
+    
+    .sheet-container h2,
+    .form-container h2 {
+      font-size: 1.4rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .form-box {
+      padding: 15px;
+    }
+    
+    .sheet-container h2,
+    .form-container h2 {
+      padding: 10px;
+      font-size: 1rem;
+    }
+    
+    .form-box label {
+      font-size: 0.9rem;
+    }
+    
+    .form-box input {
+      padding: 8px;
+      font-size: 14px;
+    }
+    
+    .form-box button {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
 </style>
-
-
 </head>
 <body class="dark-mode">
-
 <div class="container">
     <!-- IZQUIERDA: Google Sheet (solo celdas) -->
     <div class="sheet-container">
